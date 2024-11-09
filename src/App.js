@@ -1,23 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useState, useRef } from "react";
 
 function App() {
+  const [blocks, setBlocks] = useState([{ blockNumber: 0, blockName: "noName" }]);
+  const nameInputRef = useRef();
+
+  function deleteBlock(blockNumber) {
+    setBlocks((blocks) => blocks.filter(block => block.blockNumber !== blockNumber));
+  }
+
+  function addBlock() {
+    const newBlockName = nameInputRef.current.value;
+    if (newBlockName.trim() === "") return;
+
+    setBlocks((blocks) => [
+      ...blocks,
+      { blockNumber: blocks.length, blockName: newBlockName }
+    ]);
+    nameInputRef.current.value = ""; 
+  }
+
+  function SecondBlock({ blockNumber, blockName }) {
+    return (
+      <div className="secondBlock">
+        <h2>{blockName}</h2>
+        <button className="deleteButton" onClick={() => deleteBlock(blockNumber)}>Delete</button>
+      </div>
+    );
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="All">
+      <div className="StarterBlock">
+        <h1>Start do your homework</h1>
+        <input type="text" ref={nameInputRef} className="starterInput" />
+        <button onClick={addBlock}>Add Block</button>
+      </div>
+      <div className="OtherBlocks">
+        {blocks.map(block => (
+          <SecondBlock blockNumber={block.blockNumber} blockName={block.blockName} />
+        ))}
+      </div>
     </div>
   );
 }
